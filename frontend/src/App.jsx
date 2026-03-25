@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 
 function isMobileDevice() {
   return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    || window.innerWidth < 768
 }
 
 export default function App() {

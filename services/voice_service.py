@@ -59,3 +59,5 @@ def speak(text: str) -> str:
     full = np.concatenate(chunks) if len(chunks) > 1 else chunks[0]
     sf.write(AUDIO_OUT, full, 24000)
     return AUDIO_OUT
+
+
