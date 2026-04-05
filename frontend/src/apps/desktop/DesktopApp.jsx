@@ -89,13 +89,16 @@ function ProactivePanel() {
 
 
 export default function App() {
-    const [messages, setMessages] = useState([
-        {
-            role: "ai",
-            content: "Hey Sameer. I'm online and ready. What do you want to work on today?",
-            agent: "Brain"
-        }
-    ])
+    const [messages, setMessages] = useState(() => {
+        const saved = localStorage.getItem("zeno_chat")
+        return saved ? JSON.parse(saved) : [
+            {
+                role: "assistant",
+                content: "Hey Sameer. I'm online and ready. What do you want to work on today?",
+                agent: "Brain"
+            }
+        ]
+    })
     const [input, setInput] = useState("")
     const [loading, setLoading] = useState(false)
     const [tasks, setTasks] = useState([])
@@ -152,19 +155,24 @@ export default function App() {
 
     const sendMessage = async (msg) => {
         if (!msg.trim() || loading) return
+
         const userMsg = { role: "user", content: msg }
-        setMessages(prev => [...prev, userMsg])
+        const aiMsg = { role: "assistant", content: "", agent: "..." }
+
+        // ✅ SINGLE atomic update (fixes everything)
+        setMessages(prev => [...prev, userMsg, aiMsg])
+
         setInput("")
         setLoading(true)
-
-        // Add empty AI message immediately
-        setMessages(prev => [...prev, { role: "ai", content: "", agent: "..." }])
 
         try {
             const response = await fetch(`${API}/chat/stream`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: msg })
+                body: JSON.stringify({
+                    message: msg,
+                    history: messages
+                })
             })
 
             const reader = response.body.getReader()
@@ -191,17 +199,17 @@ export default function App() {
                                 setLoading(false)
                                 // Refresh tasks in case agent modified them
                                 fetchTasks()
-                                break
+                                return
                             }
 
-                            if (data.token) {
+                            if (data.token !== undefined) {
                                 fullContent += data.token
                                 const snap = fullContent
                                 const snapAgent = agentName
                                 setMessages(prev => {
                                     const updated = [...prev]
                                     updated[updated.length - 1] = {
-                                        role: "ai",
+                                        role: "assistant",
                                         content: snap,
                                         agent: snapAgent
                                     }
@@ -216,7 +224,7 @@ export default function App() {
             setMessages(prev => {
                 const updated = [...prev]
                 updated[updated.length - 1] = {
-                    role: "ai",
+                    role: "assistant",
                     content: "Connection error. Make sure the backend is running on port 8000.",
                     agent: "Error"
                 }
@@ -276,7 +284,7 @@ export default function App() {
                     await sendMessage(res.data.text)
                 } catch (e) {
                     setMessages(prev => [...prev, {
-                        role: "ai",
+                        role: "assistant",
                         content: "Could not transcribe. Please try again.",
                         agent: "Error"
                     }])
@@ -948,3 +956,5 @@ export default function App() {
         </div>
     )
 }
+
+

@@ -1,68 +1,28 @@
 # core/memory.py — Layer 2: Memory + Context Engine
-import sqlite3
 import datetime
-import os
-from runtime.config.settings import DB_PATH, DATA_DIR
-
-
-def _connect():
-    os.makedirs(DATA_DIR, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS events (
-            id        INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT NOT NULL,
-            type      TEXT NOT NULL,
-            content   TEXT NOT NULL
-        )
-    """)
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS daily_logs (
-            date       TEXT PRIMARY KEY,
-            summary    TEXT,
-            work_hours REAL DEFAULT 0
-        )
-    """)
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS patterns (
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
-            pattern     TEXT NOT NULL,
-            detected_at TEXT NOT NULL
-        )
-    """)
-    conn.commit()
-    return conn
+from core.database import db_pool  # CHANGED: Use database pool
 
 
 def log_event(event_type: str, content: str):
-    conn = _connect()
-    conn.execute(
+    db_pool.execute_query(
         "INSERT INTO events (timestamp, type, content) VALUES (?,?,?)",
         (datetime.datetime.now().isoformat(), event_type, content[:300])
     )
-    conn.commit()
-    conn.close()
 
 def get_recent_events(limit: int = 20) -> list:
-    conn = _connect()
-    rows = conn.execute(
+    return db_pool.execute_query(
         "SELECT timestamp, type, content FROM events "
         "ORDER BY id DESC LIMIT ?",
         (limit,)
-    ).fetchall()
-    conn.close()
-    return rows
+    )
 
 def get_todays_events() -> list:
-    conn = _connect()
     today = datetime.date.today().isoformat()
-    rows = conn.execute(
+    return db_pool.execute_query(
         "SELECT timestamp, type, content FROM events "
         "WHERE timestamp LIKE ? ORDER BY id ASC",
         (f"{today}%",)
-    ).fetchall()
-    conn.close()
-    return rows
+    )
 
 
 def get_context_summary() -> str:
@@ -107,18 +67,17 @@ Recent events (last 10):
 
 
 def detect_patterns() -> list:
-    conn = _connect()
     patterns_found = []
 
-    old_tasks = conn.execute("""
+    old_tasks = db_pool.execute_query("""
         SELECT content, timestamp FROM events
         WHERE type = 'task_created'
         AND timestamp < datetime('now', '-3 days')
-    """).fetchall()
+    """)
 
-    completed = conn.execute(
+    completed = db_pool.execute_query(
         "SELECT content FROM events WHERE type = 'task_completed'"
-    ).fetchall()
+    )
     completed_contents = [r[0] for r in completed]
 
     for content, ts in old_tasks:
@@ -127,50 +86,43 @@ def detect_patterns() -> list:
                 f"Delayed task: '{content}' created {ts[:10]} still pending"
             )
 
-    peak = conn.execute("""
+    peak = db_pool.execute_query("""
         SELECT substr(timestamp, 12, 2) as hour, COUNT(*) as cnt
         FROM events WHERE type = 'query'
         GROUP BY hour ORDER BY cnt DESC LIMIT 1
-    """).fetchone()
+    """)
     if peak:
         patterns_found.append(
-            f"Most active hour: {peak[0]}:00 ({peak[1]} queries)"
+            f"Most active hour: {peak[0][0]}:00 ({peak[0][1]} queries)"
         )
 
-    voice_count = conn.execute(
+    voice_count = db_pool.execute_query(
         "SELECT COUNT(*) FROM events WHERE type = 'voice_used'"
-    ).fetchone()[0]
-    text_count = conn.execute(
+    )[0][0]
+    text_count = db_pool.execute_query(
         "SELECT COUNT(*) FROM events WHERE type = 'query'"
-    ).fetchone()[0]
+    )[0][0]
     if voice_count + text_count > 5:
         pref = "voice" if voice_count > text_count else "text"
         patterns_found.append(
             f"Prefers {pref} ({voice_count} voice, {text_count} text queries)"
         )
 
-    conn.close()
     return patterns_found
 
 
 def save_log(summary: str, work_hours: float = 0):
-    conn = _connect()
     today = datetime.date.today().isoformat()
-    conn.execute(
+    db_pool.execute_query(
         "INSERT OR REPLACE INTO daily_logs (date, summary, work_hours) VALUES (?,?,?)",
         (today, summary, work_hours)
     )
-    conn.commit()
-    conn.close()
 
 def get_recent_logs(days: int = 7) -> list:
-    conn = _connect()
-    rows = conn.execute(
+    return db_pool.execute_query(
         "SELECT date, summary, work_hours FROM daily_logs "
         "ORDER BY date DESC LIMIT ?", (days,)
-    ).fetchall()
-    conn.close()
-    return rows
+    )
 
 def generate_daily_summary() -> str:
     todays = get_todays_events()

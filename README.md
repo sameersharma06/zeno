@@ -1,165 +1,231 @@
-# 🧠 Zeno — Personal AI Twin
+# 🧠 Zeno — Personal AI Twin (Fully Local AI System)
 
 ![Local](https://img.shields.io/badge/100%25_Local-brightgreen)
 ![Apple Silicon](https://img.shields.io/badge/Apple_Silicon-black)
 ![Voice](https://img.shields.io/badge/Voice_Enabled-orange)
-![Agents](https://img.shields.io/badge/LangGraph_Agents-5-purple)
+![Agents](https://img.shields.io/badge/5_Agents_System-purple)
+![Mac App](https://img.shields.io/badge/Native_macOS_App-Swift-blue)
 ![Status](https://img.shields.io/badge/Status-Active_Development-blue)
-![Built in India](https://img.shields.io/badge/Built_in-Haryana_India-ff69b4)
-![Stars](https://img.shields.io/github/stars/sameersharma06/zeno?style=social)
 
-> Zeno is a personal AI twin that runs 100% on your Mac.
-> No cloud. No subscriptions. No data leaving your machine.
-> It knows your tasks, learns your patterns, and helps you
-> plan and execute your day — every single day.
+> **Zeno is a fully local AI system that acts as your personal digital twin — it remembers, plans, and executes your life on your machine.**
+
+No cloud. No subscriptions. No data leaving your device.
 
 ---
 
-## Demo
+## ⚡ The Shift
 
-> 🎬 Demo video coming soon — follow to get notified
+AI today is powerful — but fundamentally broken.
 
----
+- It forgets you  
+- It depends on the internet  
+- It sends your data to servers  
 
-## What makes Zeno different
+> Zeno flips the model.
 
-Every AI tool today requires internet, charges monthly, and sends your data to servers you don't control.
-
-Zeno runs entirely on your MacBook. Every conversation, every task, every memory stays on your machine. Forever. Private by design.
-
-This is not a chatbot wrapper. This is a personal AI twin with memory, knowledge, agents, and voice — built from scratch on Apple Silicon.
+Instead of *you using AI* → **AI works for you locally**
 
 ---
 
-## What Zeno does
+## 🧠 What Zeno Is
 
-### 🧠 AI Brain
-Qwen2.5 running locally via MLX. Streams responses in real time. Knows your tasks, your patterns, your day. Three modes: Strict (blocks procrastination), Coach (pushes you), Chill (casual).
+Zeno is not a chatbot.
 
-### 🎤 Voice Pipeline
-Speak naturally → Whisper transcribes → Zeno thinks → Kokoro speaks back. Full offline voice conversation. No internet. No API calls.
+It is a **multi-layered AI system** built around:
 
-### 📋 Task Engine
-SQLite-backed task manager with deadlines. Add tasks by voice or text. Auto-detects tasks from conversation — "I have exam tomorrow" → task created automatically.
+- Memory  
+- Agents  
+- Voice  
+- Personal context  
+- Proactive behavior  
+
+> Think of it as a **personal AI operating system**
+
+---
+
+## 🔥 What Actually Works (Today)
+
+### 🧠 Local AI Brain
+- Qwen2.5 7B running via MLX (Apple Silicon optimized)
+- Real-time streaming responses
+- Multi-mode personality (Strict / Coach / Chill)
+
+### 🎤 Fully Offline Voice
+- Whisper STT + Kokoro TTS
+- Real-time conversation loop
+- No API calls, no tracking
+
+### 📋 Task System
+- Natural language → structured tasks
+- Deadline detection
+- SQLite-backed persistence
 
 ### 🧬 Memory Engine
-Logs every interaction. Detects your patterns — most active hour, work preferences, daily habits. Builds daily summary automatically. Zeno knows what you did today without being told.
+- Logs every interaction
+- Learns behavior patterns
+- Generates daily summaries
 
-### 📚 RAG Knowledge
-Answers from your own notes, PDFs, and documents. Fully local embeddings. Drop any file into ~/Notes → Zeno instantly knows it.
+### 📚 Personal Knowledge (RAG)
+- Reads from your local files (`~/Notes`)
+- LlamaIndex + ChromaDB
+- Fully private embeddings
 
-### 🤖 5 LangGraph Agents
+### 🤖 Multi-Agent System
 
-| Agent | What it does |
-|-------|-------------|
-| Task Agent | Manages tasks via natural language |
-| Research Agent | Queries your notes, falls back to LLM |
-| Coding Agent | Writes code for your exact stack |
-| Automation Agent | Opens Mac apps via voice |
-| Brain | Planning, strategy, decisions |
+| Agent | Role |
+|------|------|
+| Task Agent | Task execution |
+| Research Agent | Knowledge retrieval |
+| Coding Agent | Code generation |
+| Automation Agent | System control |
+| Brain | Planning + reasoning |
 
 ### ⚡ Proactive Intelligence
-Morning briefing. Hourly nudges. Deadline warnings. Zeno initiates — you don't have to ask.
+- Morning briefings  
+- Deadline alerts  
+- Context-aware nudges  
 
-### 🎭 Personality Engine
-Detects Hinglish. Auto-switches modes based on situation. Feels like YOUR AI, not an AI.
+Zeno doesn’t wait.  
+It **initiates**.
 
 ---
 
-## Tech Stack
+## 🖥️ Native macOS App (Core Advantage)
+
+Zeno runs as a **real Mac application**, not a browser wrapper.
+
+- Built using **Swift + WebKit**
+- Distributed via `.dmg`
+- Runs local backend on `localhost`
+- Designed for OS-level automation
+
+> This is a major advantage over web-based AI tools.
+
+---
+
+## 🧱 Real Architecture
+
+```
+User (voice / text)
+        ↓
+FastAPI (single port system)
+        ↓
+LangGraph Router (intent classification)
+        ↓
+ ┌───────────────────────────────┐
+ │ Task Agent      → SQLite      │
+ │ Research Agent  → RAG         │
+ │ Coding Agent    → LLM         │
+ │ Automation Agent→ macOS       │
+ │ Brain Agent     → Planning    │
+ └───────────────────────────────┘
+        ↓
+Memory Engine → behavior tracking
+        ↓
+Response → Text + Voice
+```
+
+---
+
+## ⚙️ Key Engineering Decisions
+
+- **Single-port architecture (8000)**  
+  → fixed frontend/backend failures  
+
+- **Fully local inference (MLX)**  
+  → zero API dependency  
+
+- **Agent-based modular system**  
+  → scalable architecture  
+
+- **Native Mac integration**  
+  → future automation capability  
+
+---
+
+## 🧪 Real Problems Solved
+
+- Fixed connection failures (multi-port → single-port)
+- Removed hardcoded system paths → portable system
+- Built backend health-check → no blank UI
+- Reduced blocking inference issues
+- Optimized local model performance
+
+> This is not a demo. This is an evolving system.
+
+---
+
+## 🏗️ Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| LLM | Qwen2.5-7B-Instruct-4bit via mlx_lm |
-| Speech to text | whisper-large-v3-turbo via mlx-audio |
-| Text to speech | Kokoro-82M-bf16 via mlx-audio |
-| Knowledge / RAG | LlamaIndex + ChromaDB |
-| Embeddings | BAAI/bge-small-en-v1.5 (fully local) |
-| Agents | LangGraph StateGraph |
+| LLM | Qwen2.5 (MLX) |
+| Voice STT | Whisper |
+| Voice TTS | Kokoro |
+| Agents | LangGraph |
+| RAG | LlamaIndex + ChromaDB |
 | Backend | FastAPI |
 | Frontend | React + Vite |
+| Mac App | Swift + WebKit |
 | Storage | SQLite |
-| Hardware | Apple Silicon M-series (MLX native) |
 
 ---
 
-## Run it yourself
+## ▶️ Run Locally
 
-Requirements: Mac with Apple Silicon (M1/M2/M3/M4) · 16GB RAM minimum
 ```bash
 git clone https://github.com/sameersharma06/zeno
 cd zeno
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-cd frontend && npm install && cd ..
-python main.py
+cd frontend && npm install && npm run build && cd ..
+uvicorn api.server:app --host 0.0.0.0 --port 8000
 ```
 
-Open `http://localhost:5173` — Zeno starts automatically.
-
-First run downloads ~6GB of models once. Fully offline after that. No API keys. No accounts.
+Open → http://localhost:8000
 
 ---
 
-## Add your own knowledge
-```bash
-# Drop any .txt .md .pdf into ~/Notes
-cp your_notes.md ~/Notes/
+## 🚀 Roadmap
 
-# Rebuild the index
-python knowledge/ingestor.py
-```
-
----
-
-## Roadmap
-
-| Version | Feature | Status |
-|---------|---------|--------|
-| v1 | Brain + Voice + Tasks + Memory + Agents + Proactive | ✅ Live |
-| v2 | Telegram bot — phone access | 🔨 Building |
-| v3 | Action engine — control your Mac | 📋 Planned |
-| v4 | Coming soon | 📋 Planned |
+| Version | Feature |
+|--------|--------|
+| v1 | Core system (brain + voice + memory + agents) ✅ |
+| v2 | Action engine (control Mac) 🔨 |
+| v3 | Web search (optional) 📋 |
+| v4 | Vision + behavior graph 📋 |
 
 ---
 
-## Sponsorship
+## 🧠 Vision
 
-Built and maintained by one student in Haryana, India.
+> Every person will have a personal AI system that thinks, remembers, and acts for them.
 
-If Zeno helped you or you want to support local AI development:
-
-- GitHub Sponsors — coming soon
-- UPI: sameersharmaa95@gmail.com
-
-**For companies:** If your company builds AI tools, developer tools, or Apple Silicon products and wants to be featured — reach out.
-
-**What sponsors get:**
-- Logo in README
-- Mention in every LinkedIn/Twitter update
-- Early access to Pro features
-- Direct feedback channel
+Zeno is an early version of that future.
 
 ---
 
-## Open to Opportunities
+## 👤 Builder
 
-Solo AI builder from Haryana, India looking for:
+Built end-to-end by a solo developer in India.
 
-- AI/ML Engineering Internship (remote or Delhi-NCR)
-- Research Internship (AI, LLM, Agents)
-- Part-time AI consulting
-- Open source collaboration
+Focused on:
+- Local AI systems  
+- Agents & automation  
+- Personal intelligence systems  
 
-**Stack:** Python · MLX · LangGraph · LlamaIndex · ChromaDB · React · FastAPI · Whisper · Kokoro · Qwen2.5 · Apple Silicon
+---
+
+## contact
 
 📧 Email: sameersharmaa95@gmail.com
 💼 LinkedIn: https://www.linkedin.com/in/sameersharma0028/
 🐦 Twitter/X: @sameersharma28_
-📍 Haryana, India · Open to remote globally · Available for in-office roles
+📍 Haryana, India 
 
 ---
 
-*Star ⭐ this repo if you want your own personal AI twin.*
-*Follow for weekly updates as I build this live.*
+## ⭐
+
+If you believe AI should be **private by default**, star this repo.

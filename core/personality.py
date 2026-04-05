@@ -1,7 +1,6 @@
 # core/personality.py — Layer 6: Personality Engine
 import datetime
-import sqlite3
-from runtime.config.settings import DB_PATH
+from core.database import db_pool  # CHANGED: Use database pool
 
 
 # ── LANGUAGE DETECTION ────────────────────────────────────────────────
@@ -72,37 +71,33 @@ def detect_mode(text: str) -> str:
 def get_user_patterns() -> dict:
     """Analyzes past interactions to understand user behavior."""
     try:
-        conn = sqlite3.connect(DB_PATH)
+        # Use database pool instead of direct connection
         today = datetime.date.today().isoformat()
 
         # Most active hour
-        peak = conn.execute("""
+        peak = db_pool.execute_query("""
             SELECT substr(timestamp, 12, 2) as hour, COUNT(*) as cnt
             FROM events WHERE type = 'query'
             GROUP BY hour ORDER BY cnt DESC LIMIT 1
-        """).fetchone()
+        """)
 
         # Language preference from recent queries
-        recent = conn.execute("""
+        recent = db_pool.execute_query("""
             SELECT content FROM events
             WHERE type = 'query'
             ORDER BY id DESC LIMIT 20
-        """).fetchall()
+        """)
 
         # Total interactions
-        total = conn.execute(
-            "SELECT COUNT(*) FROM events"
-        ).fetchone()[0]
+        total = db_pool.execute_query("SELECT COUNT(*) FROM events")[0][0]
 
         # Tasks completed vs created ratio
-        created = conn.execute(
+        created = db_pool.execute_query(
             "SELECT COUNT(*) FROM events WHERE type='task_created'"
-        ).fetchone()[0]
-        completed = conn.execute(
+        )[0][0]
+        completed = db_pool.execute_query(
             "SELECT COUNT(*) FROM events WHERE type='task_completed'"
-        ).fetchone()[0]
-
-        conn.close()
+        )[0][0]
 
         # Detect dominant language
         all_text = " ".join([r[0] for r in recent])
@@ -111,7 +106,7 @@ def get_user_patterns() -> dict:
         completion_rate = round(completed / max(created, 1) * 100)
 
         return {
-            "peak_hour": peak[0] if peak else "unknown",
+            "peak_hour": peak[0][0] if peak else "unknown",
             "dominant_language": dominant_language,
             "total_interactions": total,
             "completion_rate": completion_rate,

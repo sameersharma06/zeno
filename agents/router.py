@@ -90,7 +90,7 @@ def automation_node(state: AgentState) -> AgentState:
 
 
 def brain_node(state: AgentState) -> AgentState:
-    from brain.orchestrator import get_response
+    from core.brain import get_response  # CHANGED: core.brain instead of brain.orchestrator
     state["output"] = get_response(state["input"], state["tasks"])
     state["agent_used"] = "Brain"
     return state
